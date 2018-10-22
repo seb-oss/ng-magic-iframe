@@ -1,0 +1,14 @@
+{
+  "name": "@sebgroup/ng-magic-iframe",
+  "license": "Apache-2.0",
+  "author": "Robert Hjalmers <opensource@rhj.se> (http://www.linkedin.com/in/robert-hjalmers/)",
+  "version": "0.0.0-semantically-released",
+  "peerDependencies": {
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0"
+  },
+  "dependencies": {
+    "@types/element-resize-detector": "^1.1.0",
+    "element-resize-detector": "^1.1.14"
+  }
+}

@@ -16,6 +16,14 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ng-magic-iframe": [
+        "dist/ng-magic-iframe"
+      ],
+      "ng-magic-iframe/*": [
+        "dist/ng-magic-iframe/*"
+      ]
+    }
   }
 }

@@ -1,27 +1,92 @@
-# NgMagicIframeDemo
+# SEB Magic Iframe
+[![Build Status](https://travis-ci.com/sebgroup/ng-magic-iframe.svg?token=tzrdkWGEu776AVobzRhp&branch=master)](https://travis-ci.com/sebgroup/ng-magic-iframe)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.2.5.
+## Install with npm
+```
+npm install @sebgroup/ng-magic-iframe --save
+```
 
-## Development server
+## Add to app.modules
+```ts
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+import { AppComponent } from './app.component';
+import { NgMagicIframeModule } from '../../projects/ng-magic-iframe/src/lib/ng-magic-iframe.module';
 
-## Code scaffolding
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    NgMagicIframeModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Usage
+### Basic
+```html
+<seb-ng-magic-iframe [source]="'/assets/first-page.html'"></seb-ng-magic-iframe>
+```
 
-## Build
+### Advanced
+```html
+<seb-ng-magic-iframe [source]="'/assets/first-page.html'"
+                     [styles]="'body { background: white; }'"
+                     [styleUrls]="['/assets/css/external-stylesheet.css', '/assets/css/fonts.css']"
+                     [autoResize]="false"
+                     [resizeDebounceMillis]="0"
+                     (iframeEvent)="foo($event)">
+                     <!-- PLACEHOLDER FOR LOADING CONTENT -->
+</seb-ng-magic-iframe>
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Configuration and options
+### @Inputs
+|@Input|Description|Default|
+|:-----|:-----------|:-------------------|
+|source| Path to iframe content source.| n/a |
+|styles| Apply/inject inline styles to the iframe (Optional).| n/a |
+|styleUrls| Add one or more stylesheets to the iframe, note that the iframe won't be visible until they've loaded (Optional).| n/a |
+|autoResize| Auto resize the iframe when the inner content changes height (Optional).| true |
+|resizeDebounceMillis| Debounce time in milliseconds for resize event to prevent race condition (Optional).| 50 |
 
-## Running unit tests
+### @Outputs
+|@Output|Description|
+|:-----|:-----------|
+|iframeEvent| Listen for state changes in iframe, see list of events below.|
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Iframe events
+|@Input                           |Description|
+|:--------------------------------|:-----------|
+| iframe-click                    | Event emitted when element inside iframe has been clicked.
+| iframe-keyup                    | Event emitted when keyup event emitted inside iframe.
+| iframe-unloaded                 | Event emitted when iframe triggers unload event (url in iframe changes).
+| iframe-styles-added             | Emitted when styles have been added.
+| iframe-stylesheet-load          | Emitted when external stylesheets start loading.
+| iframe-stylesheet-loaded        | Emitted when external stylesheets have finished loading.
+| iframe-all-stylesheets-loaded   | Emitted when all external stylesheets have finished loading (only emitted if more than one external stylesheets).
+| iframe-loaded                   | Emitted when iframe have finished loading (including optional styles and/or stylesheets).
+| iframe-resized                  | Emitted when the iframe changes size.
 
-## Running end-to-end tests
+### Custom content loader
+SEB Magic iframe uses content projection together with ng-content to show custom content while the iframe is loading. Simply add your own component or markup like this:
+```html
+<seb-ng-magic-iframe [source]="'/assets/first-page.html'">
+  <div class="skeleton-loader"></div> <!-- replace with your own code -->
+</seb-ng-magic-iframe>
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## Further help
+## Run locally
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+* Clone the repository
+* Run `npm install`
+* Run `npm start` and navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

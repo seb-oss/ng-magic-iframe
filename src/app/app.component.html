@@ -1,20 +1,111 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand" href="#">
+      Magic iframe
+    </span>
+    <a class="github-ribbon" href="https://github.com/sebgroup/ng-magic-iframe" target="_blank">Fork me on GitHub</a>
+    <span class="navbar-text d-none d-sm-inline-block">
+        A magical iframe component for Angular
+    </span>
+</nav>
+<div class="bg-info-element py-5 px-3">
+    <h1 class="display-1 text-white">Magic iframe</h1>
+    <p class="lead text-white">A magical iframe component for Angular
+    </p>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-
+<div class="container-fluid">
+    <ng-template #inlineTip>Inject inline style in iframe: <code>body {{'{ background: white; }' }}</code> (could be any style)</ng-template>
+    <div class="row my-3">
+        <div class="col-12 col-sm">
+            <h2 class="px-3 px-sm-0">Magic iframe</h2>
+            <div class="card my-3">
+                <div class="card-header border-bottom">
+                    <p class="mb-0 lead">The Magic iframe component adds responsiveness to iframes as well as the ability to listen to events, override styles and show custom loaders when iframe is loading content.</p>
+                </div>
+                <div class="card-body">
+                    <seb-ng-magic-iframe #iframeComponent
+                                         [source]="src"
+                                         [styles]="magicControlsForm.get('inlineStyles').value ? styles : false"
+                                         [styleUrls]="magicControlsForm.get('externalStyles').value ? styleUrls : false"
+                                         [autoResize]="magicControlsForm.get('autoResize').value"
+                                         [resizeDebounceMillis]="magicControlsForm.get('resizeDebounceMillis').value"
+                                         (iframeEvent)="printEvent($event)">
+                        <div class="skeleton-loader"></div>
+                    </seb-ng-magic-iframe>
+                </div>
+                <div class="card-body border-top py-0">
+                    <button class="btn btn-link pl-0" (click)="toggleIframeTools()">{{isActiveIframeTools ? 'Hide options and log' : 'Show options and log'}}</button>
+                </div>
+                <div class="card-footer" *ngIf="isActiveIframeTools">
+                    <h4>Magic iframe options</h4>
+                    <form [formGroup]="magicControlsForm">
+                        <div class="row mb-3">
+                            <div class="col-12 col-sm-auto">
+                                <label>Toggle options</label>
+                                <div class="custom-control custom-checkbox" [ngbTooltip]="inlineTip" [container]="'body'">
+                                    <input type="checkbox" class="custom-control-input" id="inlineStyle_checkbox" formControlName="inlineStyles">
+                                    <label class="custom-control-label" for="inlineStyle_checkbox">Apply inline styles</label>
+                                </div>
+                                <div class="custom-control custom-checkbox" [ngbTooltip]="'Inject external-stylesheet.css and fonts.css in iframe and emit event and show contents when external sources have finished loading.'" [container]="'body'">
+                                    <input type="checkbox" class="custom-control-input" id="externalStyle_checkbox" formControlName="externalStyles">
+                                    <label class="custom-control-label" for="externalStyle_checkbox">Apply external stylesheets (<a href="/assets/css/external-stylesheet.css" target="_blank">styles</a> and <a href="/assets/css/fonts.css" target="_blank">font</a>)</label>
+                                </div>
+                                <div class="custom-control custom-checkbox" [ngbTooltip]="'Resize iframe when content inside iframe changes height.'" [container]="'body'">
+                                    <input type="checkbox" class="custom-control-input" id="autoResize_checkbox" formControlName="autoResize">
+                                    <label class="custom-control-label" for="autoResize_checkbox">Auto resize</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-auto pl-0 pl-sm-5 mt-3 mt-sm-0" [ngbTooltip]="'Debounce time for resize detection of iframe content height.'" [container]="'body'">
+                                <label for="resizeDebounceMillis_input">Resize debounce milliseconds</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" id="resizeDebounceMillis_input" aria-label="Resize debounce milliseconds" formControlName="resizeDebounceMillis">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">ms</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-dark pr-0" *ngIf="isActiveIframeTools && $events | async as events">
+                    <h4 class="text-white mb-0">Magic iframe events: {{events.length}}</h4>
+                    <div class="temp">
+                        <code class="d-block scrollbar-dark" style="overflow: auto; max-height: 170px;">
+                            <div *ngFor="let event of events"><strong class="mr-1">{{event.event + ':'}}</strong><span class="text-white">{{event.src}}</span> <i *ngIf="event.resource" class="text-muted"> {{event.resource}}</i></div>
+                        </code>
+                    </div>
+                    <span class="text-white"><strong>iframe source:</strong> {{activSrc}}</span>
+                    <div class="btn-group w-100 pr-3 mt-3">
+                        <button class="btn btn-sm btn-light col" (click)="clearLog()">Clear log</button>
+                        <button class="btn btn-sm btn-light col" (click)="toggleSource()">Toggle source</button>
+                        <button class="btn btn-sm btn-light col" (click)="reload()">Reload iframe</button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <exemplify [sources]="sources"></exemplify>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm">
+            <h2 class="px-3 px-sm-0">Normal iframe</h2>
+            <div class="card my-3">
+                <div class="card-header border-bottom">
+                    <p class="mb-0 lead">Normal, boring, old iframe that won't resize or let you know what's happening inside. The height is fixed by default so unless you update it manually it will get scrollbars when iframe content is taller than the iframe.</p>
+                </div>
+                <div class="card-body" id="normalIframe">
+                    <iframe src="/assets/first-page.html" frameborder="0" style="width: 100%" height="200"></iframe>
+                </div>
+                <div class="card-footer">
+                    <p>Nothing special going on here but just as reference, this how you normally would add an iframe.</p>
+                    <exemplify [selector]="'#normalIframe iframe'"></exemplify>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="py-5 text-center row justify-content-center">
+            <div class="col-12 col-sm-auto text-muted">© {{date | date:'yyyy'}} Skandinaviska Enskilda Banken AB (publ)</div>
+            <div class="col-12 col-sm-auto"><span class="mr-3">Version: <a href="{{'https://github.com/sebgroup/ng-magic-iframe/releases/' + versionLink}}" target="_blank">{{version}}</a></span>Build: {{travis_build_number}}</div>
+            <div class="col-12 col-sm-auto">Licensed under <a href="https://github.com/sebgroup/ng-magic-iframe/blob/master/LICENSE.md" target="_blank">Apache 2.0</a></div>
+        </div>
+    </footer>
+</div>

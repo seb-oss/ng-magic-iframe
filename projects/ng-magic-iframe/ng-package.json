@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/ng-magic-iframe",
+  "whitelistedNonPeerDependencies": [
+    "@types/element-resize-detector",
+    "element-resize-detector"
+  ],
+  "lib": {
+    "entryFile": "src/public_api.ts"
+  }
+}
