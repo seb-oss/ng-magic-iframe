@@ -51,6 +51,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^8.9.5",
     "codelyzer": "~4.3.0",
+    "copyfiles": "^2.1.0",
     "cz-conventional-changelog": "^2.1.0",
     "husky": "^1.1.2",
     "jasmine-core": "~2.99.1",
