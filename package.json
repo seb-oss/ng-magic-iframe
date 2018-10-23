@@ -7,7 +7,7 @@
     "build": "ng build --base-href https://sebgroup.github.io/ng-magic-iframe/ --prod",
     "prebuild": "rimraf dist/ng-magic-iframe-demo && replace __TRAVIS_BUILD_NUMBER__ $TRAVIS_BUILD_NUMBER src/environments/environment.ts && replace __TRAVIS_BUILD_NUMBER__ $TRAVIS_BUILD_NUMBER src/environments/environment.prod.ts",
     "build-lib": "ng build ng-magic-iframe && copyfiles -f CHANGELOG.md LICENSE.md README.md dist/ng-magic-iframe",
-    "prebuild-lib": "rimraf dist/ng-magic-iframe",
+    "prebuild-lib": "rimraf dist/ng-magic-iframe && npm --prefix ./projects/ng-magic-iframe install ./projects/ng-magic-iframe",
     "test": "ng test",
     "lint": "ng lint",
     "lint-lib": "ng lint ng-magic-iframe",
