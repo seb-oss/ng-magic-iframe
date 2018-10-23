@@ -15,7 +15,7 @@
 <div class="container-fluid">
     <ng-template #inlineTip>Inject inline style in iframe: <code>body {{'{ background: white; }' }}</code> (could be any style)</ng-template>
     <div class="row my-3">
-        <div class="col-12 col-sm">
+        <div class="col-12 col-md-6">
             <h2 class="px-3 px-sm-0">Magic iframe</h2>
             <div class="card my-3">
                 <div class="card-header border-bottom">
@@ -54,7 +54,7 @@
                                     <label class="custom-control-label" for="autoResize_checkbox">Auto resize</label>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-auto pl-0 pl-sm-5 mt-3 mt-sm-0" [ngbTooltip]="'Debounce time for resize detection of iframe content height.'" [container]="'body'">
+                            <div class="col-12 col-sm-auto mt-3 mt-sm-0" [ngbTooltip]="'Debounce time for resize detection of iframe content height.'" [container]="'body'">
                                 <label for="resizeDebounceMillis_input">Resize debounce milliseconds</label>
                                 <div class="input-group mb-3">
                                     <input type="number" class="form-control" id="resizeDebounceMillis_input" aria-label="Resize debounce milliseconds" formControlName="resizeDebounceMillis">
@@ -85,7 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm">
+        <div class="col-12 col-md-6">
             <h2 class="px-3 px-sm-0">Normal iframe</h2>
             <div class="card my-3">
                 <div class="card-header border-bottom">
