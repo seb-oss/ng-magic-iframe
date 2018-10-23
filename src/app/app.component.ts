@@ -13,10 +13,10 @@ import {environment} from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-    src = '/assets/first-page.html';
-    activSrc = '/assets/first-page.html';
+    src = './assets/first-page.html';
+    activSrc = './assets/first-page.html';
     styles = 'body { background: white; }';
-    styleUrls: Array<string> = ['/assets/css/external-stylesheet.css', '/assets/css/fonts.css'];
+    styleUrls: Array<string> = ['./css/external-stylesheet.css', './css/fonts.css'];
     $events: BehaviorSubject<Array<IframeEvent>> = new BehaviorSubject<Array<IframeEvent>>([]);
     magicControlsForm: FormGroup;
     isActiveIframeTools = true;
@@ -25,19 +25,24 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(NgMagicIframeComponent) private iframeComponent: NgMagicIframeComponent;
     sources: Array<Snippet> = [{
         name: 'Basic usage',
-        src: '<seb-ng-magic-iframe [source]="\'/assets/first-page.html\'"></seb-ng-magic-iframe>',
+        src: '<seb-ng-magic-iframe [source]="\'./assets/first-page.html\'"></seb-ng-magic-iframe>',
         lang: 'markup'
     }, {
         name: 'Advanced usage',
-        src: `<seb-ng-magic-iframe [source]="'/assets/first-page.html'"
+        src: `<seb-ng-magic-iframe [source]="'./assets/first-page.html'"
                      [styles]="'body { background: white; }'"
-                     [styleUrls]="['/assets/css/external-stylesheet.css', '/assets/css/fonts.css']"
+                     [styleUrls]="['./css/external-stylesheet.css', './css/fonts.css']"
                      [autoResize]="false"
                      [resizeDebounceMillis]="0"
                      (iframeEvent)="foo($event)">
                      <div class="skeleton-loader"></div>
 </seb-ng-magic-iframe>`,
         lang: 'markup'
+    }];
+    iframeSource: Array<Snippet> = [{
+     name: '',
+     src: `<iframe src="./assets/first-page.html" frameborder="0" style="width: 100%" height="200"></iframe>`,
+     lang: 'markup'
     }];
     constructor(private cdr: ChangeDetectorRef, private fb: FormBuilder) {}
 
@@ -53,7 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
     };
 
     toggleSource() {
-        this.src = this.src !== '/assets/first-page.html' ? '/assets/first-page.html' : '/assets/other-page.html';
+        this.src = this.src !== './assets/first-page.html' ? './assets/first-page.html' : './assets/other-page.html';
     }
 
     reload() {
