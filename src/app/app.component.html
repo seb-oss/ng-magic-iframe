@@ -29,7 +29,7 @@
                                          [autoResize]="magicControlsForm.get('autoResize').value"
                                          [resizeDebounceMillis]="magicControlsForm.get('resizeDebounceMillis').value"
                                          (iframeEvent)="printEvent($event)">
-                        <div class="skeleton-loader"></div>
+                        <div *ngIf="magicControlsForm.get('showSkeletonLoader').value" class="skeleton-loader"></div>
                     </seb-ng-magic-iframe>
                 </div>
                 <div class="card-body border-top py-0">
@@ -48,6 +48,10 @@
                                 <div class="custom-control custom-checkbox" [ngbTooltip]="'Inject external-stylesheet.css and fonts.css in iframe and emit event and show contents when external sources have finished loading.'" [container]="'body'">
                                     <input type="checkbox" class="custom-control-input" id="externalStyle_checkbox" formControlName="externalStyles">
                                     <label class="custom-control-label" for="externalStyle_checkbox">Apply external stylesheets (<a href="./assets/css/external-stylesheet.css" target="_blank">styles</a> and <a href="./assets/css/fonts.css" target="_blank">font</a>)</label>
+                                </div>
+                                <div class="custom-control custom-checkbox" [ngbTooltip]="'Show custom loader when iframe is loading.'" [container]="'body'">
+                                    <input type="checkbox" class="custom-control-input" id="showSkeletonLoader_checkbox" formControlName="showSkeletonLoader">
+                                    <label class="custom-control-label" for="showSkeletonLoader_checkbox">Show custom loader</label>
                                 </div>
                                 <div class="custom-control custom-checkbox" [ngbTooltip]="'Resize iframe when content inside iframe changes height.'" [container]="'body'">
                                     <input type="checkbox" class="custom-control-input" id="autoResize_checkbox" formControlName="autoResize">
@@ -95,7 +99,7 @@
                     <iframe src="./assets/first-page.html" frameborder="0" style="width: 100%" height="200"></iframe>
                 </div>
                 <div class="card-footer">
-                    <p>Nothing special going on here but just as reference, this how you normally would add an iframe.</p>
+                    <p>Nothing special going on here but just as reference, this is how you'd normally add an iframe.</p>
                     <exemplify [sources]="iframeSource"></exemplify>
                 </div>
             </div>
