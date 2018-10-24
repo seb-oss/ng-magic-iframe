@@ -89,7 +89,8 @@ export class AppComponent implements OnInit, OnDestroy {
            inlineStyles: true,
            externalStyles: true,
            autoResize: true,
-           resizeDebounceMillis: 0
+           resizeDebounceMillis: 0,
+           showSkeletonLoader: true
         });
 
         this.magicControlsForm.valueChanges
