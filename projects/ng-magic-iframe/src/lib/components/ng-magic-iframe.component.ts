@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import {BehaviorSubject, forkJoin, fromEvent, Observable, ReplaySubject, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, takeUntil, tap} from 'rxjs/operators';
-import elementResizeDetectorMaker from 'element-resize-detector';
+import {elementResizeDetectorMaker} from 'element-resize-detector';
 import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
 
 @Component({
