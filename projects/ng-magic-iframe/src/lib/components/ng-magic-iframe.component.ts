@@ -19,7 +19,7 @@ import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
         <div class="seb-iframe-loading" *ngIf="$loading | async">
             <ng-content></ng-content>
         </div>
-        <iframe #iframe [src]="source | safe" frameborder="0" class="w-100" [ngStyle]="$styling | async" scrolling="no"></iframe>
+        <iframe #iframe [src]="source | safe" frameborder="0" class="seb-iframe" [ngStyle]="$styling | async" scrolling="no"></iframe>
     `,
     styles: [`
         :host {
@@ -27,8 +27,9 @@ import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
             display: block;
             overflow: hidden;
         }
-        iframe {
-            overflow: hidden
+        .seb-iframe {
+            overflow: hidden;
+            width: 100%;
         }
         .seb-iframe-loading {
             height: 100%;
@@ -55,12 +56,11 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     @Input() set resizeDebounceMillis(value: number) {
+        if (this._resizeDebounceMillis !== value) {
+            this.updateStyles();
+        }
         this._resizeDebounceMillis = value;
-        this.$styling = this.$bodyHeight.pipe(
-            distinctUntilChanged(),
-            debounceTime(this.resizeDebounceMillis),
-            tap(val => this.emitEvent('iframe-resized')),
-            map((height) => ({'height.px': height})));
+
     }
     get autoResize(): boolean {
         return this._autoResize;
@@ -112,6 +112,14 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
     private _autoResize = true;
     private _resizeDebounceMillis = 50;
     constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
+
+    private updateStyles() {
+        this.$styling = this.$bodyHeight.pipe(
+            distinctUntilChanged(),
+            debounceTime(this.resizeDebounceMillis),
+            tap(val => this.emitEvent('iframe-resized')),
+            map((height) => ({'height.px': height})));
+    }
 
     private addStyleSheets(styleUrls) {
         if (styleUrls.length > 0) {
@@ -205,11 +213,12 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
     ngOnInit() {
         this.activeSource = this.source;
         this.$loading.pipe(
-            filter(value => value === false),
+            filter(value => value === false || value === null),
             takeUntil(this.$unsubscribe)
         ).subscribe((res) => {
-            this.emitEvent('iframe-loaded');
+            this.emitEvent(res === null ? 'iframe-loaded-with-errors' : 'iframe-loaded');
         });
+        this.updateStyles();
     }
 
     ngAfterViewInit() {
@@ -241,53 +250,59 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
                 takeUntil(this.$unsubscribe)
             )
             .subscribe((res) => {
-                this.activeSource = iframe.contentDocument.location.href;
+                try {
+                    this.activeSource = iframe.contentWindow.location.href;
 
-                // declare iframe document and body
-                this.iframeDocument = iframe.contentDocument;
-                this.iframeBody = this.iframeDocument.body;
+                    // declare iframe document and body
+                    this.iframeDocument = iframe.contentDocument;
+                    this.iframeBody = this.iframeDocument.body;
 
-                // add inline css
-                if (this.styles) {
-                    this.addCss(this.styles);
+                    // add inline css
+                    if (this.styles) {
+                        this.addCss(this.styles);
+                    }
+
+                    // add external stylesheets
+                    if (this.styleUrls && this.styleUrls.length > 0) {
+                        this.addStyleSheets(this.styleUrls);
+                    } else {
+                        this.$loading.next(false);
+                    }
+
+                    // add element resize detector
+                    if (this.autoResize) {
+                        this.addElementResizeDetector(this.iframeBody, iframe.contentWindow.getComputedStyle(this.iframeBody));
+                    }
+
+                    // add click listener
+                    const clickListener = this.renderer.listen(
+                        iframe.contentWindow,
+                        'click',
+                        ($event: MouseEvent) => this.$iframeClick.next($event)
+                    );
+                    this.eventListeners.push(clickListener);
+
+                    // add key up listener
+                    const keyUpListener = this.renderer.listen(
+                        iframe.contentWindow,
+                        'keyup',
+                        ($event: KeyboardEvent) => this.$iframeKeyUp.next($event)
+                    );
+                    this.eventListeners.push(keyUpListener);
+
+                    // add unload listener
+                    const unloadListener = this.renderer.listen(
+                        iframe.contentWindow,
+                        'beforeunload',
+                        ($event: BeforeUnloadEvent) => this.$iframeUnload.next($event)
+                    );
+                    this.eventListeners.push(unloadListener);
+                    } catch (error) {
+                    console.log('Event listeners and/or styles and resize listener could not be added due to a cross-origin frame error.');
+                    console.warn(error);
+                    this.$loading.next(null);
+
                 }
-
-                // add external stylesheets
-                if (this.styleUrls && this.styleUrls.length > 0) {
-                    this.addStyleSheets(this.styleUrls);
-                } else {
-                    this.$loading.next(false);
-                }
-
-                // add element resize detector
-                if (this.autoResize) {
-                    this.addElementResizeDetector(this.iframeBody, iframe.contentWindow.getComputedStyle(this.iframeBody));
-                }
-
-                // add click listener
-                const clickListener = this.renderer.listen(
-                    iframe.contentWindow,
-                    'click',
-                    ($event: MouseEvent) => this.$iframeClick.next($event)
-                );
-                this.eventListeners.push(clickListener);
-
-                // add key up listener
-                const keyUpListener = this.renderer.listen(
-                    iframe.contentWindow,
-                    'keyup',
-                    ($event: KeyboardEvent) => this.$iframeKeyUp.next($event)
-                );
-                this.eventListeners.push(keyUpListener);
-
-                // add unload listener
-                const unloadListener = this.renderer.listen(
-                    iframe.contentWindow,
-                    'beforeunload',
-                    ($event: BeforeUnloadEvent) => this.$iframeUnload.next($event)
-                );
-                this.eventListeners.push(unloadListener);
-                // console.log('iframe loaded');
             });
     }
 
