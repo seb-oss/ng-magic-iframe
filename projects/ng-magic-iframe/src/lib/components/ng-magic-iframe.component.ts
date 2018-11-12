@@ -19,7 +19,7 @@ import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
         <div class="seb-iframe-loading" *ngIf="$loading | async">
             <ng-content></ng-content>
         </div>
-        <iframe #iframe [src]="source | safe" frameborder="0" class="w-100" [ngStyle]="$styling | async" scrolling="no"></iframe>
+        <iframe #iframe [src]="source | safe" frameborder="0" class="seb-iframe" [ngStyle]="$styling | async" scrolling="no"></iframe>
     `,
     styles: [`
         :host {
@@ -27,8 +27,9 @@ import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
             display: block;
             overflow: hidden;
         }
-        iframe {
-            overflow: hidden
+        .seb-iframe {
+            overflow: hidden;
+            width: 100%;
         }
         .seb-iframe-loading {
             height: 100%;
