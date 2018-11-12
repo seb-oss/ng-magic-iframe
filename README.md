@@ -14,7 +14,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { NgMagicIframeModule } from '../../projects/ng-magic-iframe/src/lib/ng-magic-iframe.module';
+import { NgMagicIframeModule } from '@sebgroup/ng-magic-iframe';
 
 @NgModule({
   declarations: [
@@ -28,6 +28,17 @@ import { NgMagicIframeModule } from '../../projects/ng-magic-iframe/src/lib/ng-m
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+```
+
+## Allow synthetic default imports
+If you run into the following error: `@types/element-resize-detector/index"' has no default export` you need to allow synthetic default imports as the type definitions for element-resize-detector, which this library depends on, has no default export declared. In `tsconfig.json` in your root project folder, set `allowSyntheticDefaultImports` to true:
+```
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "allowSyntheticDefaultImports" : true,
+    ...
+}
 ```
 
 ## Usage
