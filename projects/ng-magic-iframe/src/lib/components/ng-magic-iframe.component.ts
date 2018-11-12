@@ -55,12 +55,11 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     @Input() set resizeDebounceMillis(value: number) {
+        if (this._resizeDebounceMillis !== value) {
+            this.updateStyles();
+        }
         this._resizeDebounceMillis = value;
-        this.$styling = this.$bodyHeight.pipe(
-            distinctUntilChanged(),
-            debounceTime(this.resizeDebounceMillis),
-            tap(val => this.emitEvent('iframe-resized')),
-            map((height) => ({'height.px': height})));
+
     }
     get autoResize(): boolean {
         return this._autoResize;
@@ -112,6 +111,14 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
     private _autoResize = true;
     private _resizeDebounceMillis = 50;
     constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
+
+    private updateStyles() {
+        this.$styling = this.$bodyHeight.pipe(
+            distinctUntilChanged(),
+            debounceTime(this.resizeDebounceMillis),
+            tap(val => this.emitEvent('iframe-resized')),
+            map((height) => ({'height.px': height})));
+    }
 
     private addStyleSheets(styleUrls) {
         if (styleUrls.length > 0) {
@@ -210,6 +217,7 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
         ).subscribe((res) => {
             this.emitEvent('iframe-loaded');
         });
+        this.updateStyles();
     }
 
     ngAfterViewInit() {
@@ -287,7 +295,6 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
                     ($event: BeforeUnloadEvent) => this.$iframeUnload.next($event)
                 );
                 this.eventListeners.push(unloadListener);
-                // console.log('iframe loaded');
             });
     }
 
