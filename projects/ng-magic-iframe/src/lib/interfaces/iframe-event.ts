@@ -5,6 +5,7 @@ export interface IframeEvent {
 }
 export type IframeEventName = 'iframe-click'
     | 'iframe-loaded'
+    | 'iframe-loaded-with-errors'
     | 'iframe-unloaded'
     | 'iframe-styles-added'
     | 'iframe-stylesheet-load'
