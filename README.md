@@ -84,7 +84,8 @@ If you run into the following error: `@types/element-resize-detector/index"' has
 | iframe-stylesheet-load          | Emitted when external stylesheets start loading.
 | iframe-stylesheet-loaded        | Emitted when external stylesheets have finished loading.
 | iframe-all-stylesheets-loaded   | Emitted when all external stylesheets have finished loading (only emitted if more than one external stylesheets).
-| iframe-loaded                   | Emitted when iframe have finished loading (including optional styles and/or stylesheets).
+| iframe-loaded                   | Emitted when iframe has finished loading (including optional styles and/or stylesheets).
+| iframe-loaded-with-errors       | Emitted when iframe has encountered errors after loading (usually related to CORS and inability to access iframe content).
 | iframe-resized                  | Emitted when the iframe changes size.
 
 ### Custom content loader
