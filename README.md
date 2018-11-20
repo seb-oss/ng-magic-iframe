@@ -68,6 +68,7 @@ If you run into the following error: `@types/element-resize-detector/index"' has
 |styleUrls| Add one or more stylesheets to the iframe, note that the iframe won't be visible until they've loaded (Optional).| n/a |
 |autoResize| Auto resize the iframe when the inner content changes height (Optional).| true |
 |resizeDebounceMillis| Debounce time in milliseconds for resize event to prevent race condition (Optional).| 50 |
+|debug| Output iframe events in console log (Optional).| false |
 
 ### @Outputs
 |@Output|Description|
