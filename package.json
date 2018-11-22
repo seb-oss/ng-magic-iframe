@@ -8,6 +8,10 @@
     "prebuild": "rimraf dist/ng-magic-iframe-demo && replace __TRAVIS_BUILD_NUMBER__ $TRAVIS_BUILD_NUMBER src/environments/environment.ts && replace __TRAVIS_BUILD_NUMBER__ $TRAVIS_BUILD_NUMBER src/environments/environment.prod.ts",
     "build-lib": "ng build ng-magic-iframe && copyfiles -f CHANGELOG.md LICENSE.md README.md dist/ng-magic-iframe",
     "prebuild-lib": "rimraf dist/ng-magic-iframe && npm --prefix ./projects/ng-magic-iframe install ./projects/ng-magic-iframe",
+    "build-element": "ng build magic-iframe --prod --output-hashing=none --stats-json",
+    "postbuild-element": "concat ./dist/magic-iframe/runtime.js ./dist/magic-iframe/polyfills.js ./dist/magic-iframe/main.js -o ./dist/magic-iframe/magic-iframe.js && copyfiles -f projects/magic-iframe/src/element.html projects/magic-iframe/src/first-page.html projects/magic-iframe/src/other-page.html dist/magic-iframe && gzip dist/magic-iframe/*.js",
+    "serve-element": "http-server ./dist/magic-iframe/ -g",
+    "bundle-report": "webpack-bundle-analyzer dist/magic-iframe/stats.json",
     "test": "ng test",
     "lint": "ng lint",
     "lint-lib": "ng lint ng-magic-iframe",
@@ -33,8 +37,10 @@
     "@angular/router": "^7.0.0",
     "@ng-bootstrap/ng-bootstrap": "^3.3.0",
     "@sebgroup/bootstrap": "^2.2.0",
+    "@webcomponents/custom-elements": "^1.2.1",
     "angular-exemplify": "^3.1.3",
     "core-js": "^2.5.4",
+    "document-register-element": "^1.7.2",
     "prismjs": "^1.15.0",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.26"
@@ -42,7 +48,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.0",
     "@angular-devkit/build-ng-packagr": "~0.8.0",
-    "@angular/cli": "~7.0.1",
+    "@angular/cli": "^7.0.6",
     "@angular/compiler-cli": "^7.0.0",
     "@angular/language-service": "^7.0.0",
     "@commitlint/cli": "^7.2.1",
@@ -51,8 +57,11 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^8.9.5",
     "codelyzer": "~4.3.0",
+    "concat": "^1.0.3",
     "copyfiles": "^2.1.0",
     "cz-conventional-changelog": "^2.1.0",
+    "gzip-cli": "^0.1.3",
+    "http-server": "^0.11.1",
     "husky": "^1.1.2",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -70,7 +79,8 @@
     "tsickle": "^0.33.0",
     "tslib": "^1.9.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.1.3"
+    "typescript": "~3.1.3",
+    "webpack-bundle-analyzer": "^3.0.3"
   },
   "commitlint": {
     "extends": [
