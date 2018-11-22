@@ -51,6 +51,13 @@ import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
     `]
 })
 export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy {
+    get debug(): boolean {
+        return this._debug;
+    }
+
+    @Input() set debug(value: boolean) {
+        this._debug = value;
+    }
     get resizeDebounceMillis(): number {
         return this._resizeDebounceMillis;
     }
@@ -102,6 +109,7 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
     iframeBody: HTMLElement;
     activeSource: string;
     elementResizeDetector: elementResizeDetectorMaker.Erd;
+    private _debug = false;
     private eventListeners: Array<any> = [];
     private $unsubscribe = new Subject();
     @ViewChild('iframe') elementRef: ElementRef;
@@ -202,6 +210,9 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
             iframeEvent.resource = resource;
         }
         this.iframeEvent.emit(iframeEvent);
+        if (this.debug) {
+            console.log(iframeEvent);
+        }
     }
 
     reload() {
