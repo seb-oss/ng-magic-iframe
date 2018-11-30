@@ -26,7 +26,10 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/prismjs/prism.js"
+              "node_modules/prismjs/prism.js",
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js"
+              }
             ]
           },
           "configurations": {
@@ -158,8 +161,108 @@
           }
         }
       }
-    }
-  },
+    },
+    "magic-iframe": {
+      "root": "projects/magic-iframe/",
+      "sourceRoot": "projects/magic-iframe/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/magic-iframe",
+            "index": "projects/magic-iframe/src/index.html",
+            "main": "projects/magic-iframe/src/main.ts",
+            "polyfills": "projects/magic-iframe/src/polyfills.ts",
+            "tsConfig": "projects/magic-iframe/tsconfig.app.json",
+            "assets": [
+              "projects/magic-iframe/src/favicon.ico",
+              "projects/magic-iframe/src/assets"
+            ],
+            "styles": [
+              "projects/magic-iframe/src/styles.css"
+            ],
+            "scripts": [
+              "node_modules/@webcomponents/custom-elements/src/native-shim.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/magic-iframe/src/environments/environment.ts",
+                  "with": "projects/magic-iframe/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "magic-iframe:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "magic-iframe:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "magic-iframe:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/magic-iframe/src/test.ts",
+            "polyfills": "projects/magic-iframe/src/polyfills.ts",
+            "tsConfig": "projects/magic-iframe/tsconfig.spec.json",
+            "karmaConfig": "projects/magic-iframe/karma.conf.js",
+            "styles": [
+              "projects/magic-iframe/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/magic-iframe/src/favicon.ico",
+              "projects/magic-iframe/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/magic-iframe/tsconfig.app.json",
+              "projects/magic-iframe/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }},
   "defaultProject": "ng-magic-iframe-demo",
   "schematics": {
     "@schematics/angular:component": {
