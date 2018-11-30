@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>SEB Magic iframe</title>
+    <base href="/ng-magic-iframe/web-component/">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../assets/css/fonts.css">
+    <link rel="stylesheet" href="./styles.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/@sebgroup/bootstrap/css/bootstrap.min.css">-->
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand" href="#">
+      Magic iframe
+    </span>
+    <a class="github-ribbon" href="https://github.com/sebgroup/ng-magic-iframe" target="_blank">Fork me on GitHub</a>
+    <span class="navbar-text d-none d-sm-inline-block">
+        A magical web component
+    </span>
+</nav>
+<div class="bg-primary-element py-5 px-3">
+    <h1 class="display-1 text-white">Magic iframe</h1>
+    <p class="lead text-white">A magical web component
+    </p>
+</div>
+<div class="container-content">
+    <h2 class="px-3 px-sm-0 mt-3">Magic iframe as web component</h2>
+    <div class="card my-3">
+        <div class="card-header border-bottom">
+            <p class="mb-0 lead">This web component is built using Angular Elements and targets es5, for more information and options please check <a class="font-weight-normal" href="../">Ng Magic iframe</a>.</p>
+        </div>
+        <div class="card-body">
+            <seb-magic-iframe source="../assets/first-page.html" resize-debounce-millis="0" styles="body { background: white; }">
+                <div class="skeleton-loader"></div>
+            </seb-magic-iframe>
+        </div>
+        <div class="card-body">
+            <hr>
+            <p><label>Basic usage</label>
+                <code class="d-block">
+                    &lt;seb-magic-iframe source=&quot;../assets/first-page.html&quot;&gt;&lt;/seb-magic-iframe&gt;<br/>
+                    &lt;script type=&quot;text/javascript&quot; src=&quot;magic-iframe-es5.js&quot;&gt;&lt;/script&gt;
+                </code>
+            </p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="./magic-iframe-es5.js"></script>
+<script type="text/javascript">
+    document.querySelector('seb-magic-iframe').styleUrls = ["../assets/css/external-stylesheet.css", "../assets/css/fonts.css"]
+</script>
+</body>
+</html>
