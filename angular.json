@@ -262,36 +262,7 @@
           }
         }
       }
-    },
-    "magic-iframe-e2e": {
-      "root": "projects/magic-iframe-e2e/",
-      "projectType": "application",
-      "prefix": "",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/magic-iframe-e2e/protractor.conf.js",
-            "devServerTarget": "magic-iframe:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "magic-iframe:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "projects/magic-iframe-e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    }
-  },
+    }},
   "defaultProject": "ng-magic-iframe-demo",
   "schematics": {
     "@schematics/angular:component": {
