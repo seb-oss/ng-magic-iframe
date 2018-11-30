@@ -1,10 +1,13 @@
 import {
     AfterViewInit,
-    ChangeDetectorRef,
+    ChangeDetectionStrategy,
     Component,
-    ElementRef, EventEmitter,
+    ElementRef,
+    EventEmitter,
     Input,
-    OnDestroy, OnInit, Output,
+    OnDestroy,
+    OnInit,
+    Output,
     Renderer2,
     ViewChild
 } from '@angular/core';
@@ -16,10 +19,10 @@ import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
 @Component({
     selector: 'seb-ng-magic-iframe',
     template: `
-        <div class="seb-iframe-loading" *ngIf="$loading | async">
+        <div class="seb-iframe-loading" *ngIf="$loading | push">
             <ng-content></ng-content>
         </div>
-        <iframe #iframe [src]="source | safe" frameborder="0" class="seb-iframe" [ngStyle]="$styling | async" scrolling="no"></iframe>
+        <iframe #iframe [src]="source | safe" frameborder="0" class="seb-iframe" [ngStyle]="$styling | push" scrolling="no"></iframe>
     `,
     styles: [`
         :host {
@@ -48,7 +51,8 @@ import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
             z-index: -1;
             left: 0;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy {
     get debug(): boolean {
@@ -119,14 +123,15 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
     private _styleUrls: Array<string>;
     private _autoResize = true;
     private _resizeDebounceMillis = 50;
-    constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
+    constructor(private renderer: Renderer2) {}
 
     private updateStyles() {
         this.$styling = this.$bodyHeight.pipe(
             distinctUntilChanged(),
             debounceTime(this.resizeDebounceMillis),
-            tap(val => this.emitEvent('iframe-resized')),
-            map((height) => ({'height.px': height})));
+            map((height) => ({'height.px': height})),
+            tap(() => this.emitEvent('iframe-resized'))
+        );
     }
 
     private addStyleSheets(styleUrls) {
@@ -149,7 +154,7 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
                 loadSubjects.push(loadSubject);
 
                 // listen to load event on link
-                const stylesheetLoadListener = this.renderer.listen(linkElement, 'load', (test: Event) => {
+                const stylesheetLoadListener = this.renderer.listen(linkElement, 'load', () => {
                     this.iframeBody.style.overflow = 'inherit';
                     this.emitEvent('iframe-stylesheet-loaded', styleUrl);
                     loadSubject.next(styleUrl);
@@ -171,7 +176,7 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
                 .pipe(
                     takeUntil(this.$unsubscribe)
                 )
-                .subscribe(res => {
+                .subscribe(() => {
                     if (styleUrls.length > 1) {
                         this.emitEvent('iframe-all-stylesheets-loaded', styleUrls);
                     }
@@ -237,30 +242,29 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
         this.$iframeClick
             .pipe(
                 takeUntil(this.$unsubscribe)
-            ).subscribe((res) => {
+            ).subscribe(() => {
             this.emitEvent('iframe-click');
         });
         this.$iframeKeyUp
             .pipe(
                 takeUntil(this.$unsubscribe)
-            ).subscribe((res) => {
+            ).subscribe(() => {
             this.emitEvent('iframe-keyup');
         });
         this.$iframeUnload
             .pipe(
                 takeUntil(this.$unsubscribe)
-            ).subscribe((res) => {
+            ).subscribe(() => {
             this.$loading.next(true);
             this.emitEvent('iframe-unloaded');
             this.iframeBody.style.overflow = 'hidden';
-            this.cdr.detectChanges();
         });
 
         fromEvent(iframe, 'load')
             .pipe(
                 takeUntil(this.$unsubscribe)
             )
-            .subscribe((res) => {
+            .subscribe(() => {
                 try {
                     this.activeSource = iframe.contentWindow.location.href;
 
@@ -312,7 +316,6 @@ export class NgMagicIframeComponent implements OnInit, AfterViewInit, OnDestroy 
                     console.log('Event listeners and/or styles and resize listener could not be added due to a cross-origin frame error.');
                     console.warn(error);
                     this.$loading.next(null);
-
                 }
             });
     }
