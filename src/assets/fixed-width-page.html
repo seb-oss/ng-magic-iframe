@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        body {
+            background: #FFC500;
+            width: 720px;
+            margin: 0 auto;
+            min-width: 500px;
+        }
+        h2, p {
+            margin-top: 0;
+        }
+        textarea {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<h2>Fixed width page (iframed)</h2>
+<nav>Navigation</nav>
+<p>This page has a fixed width which is set to 720 pixels.</p>
+<p>When a page uses fixed widths (pretty common on legacy apps and sites) they might not fit the size of the iframe containing them (unless it uses the full screen width), this is normally solved by showing scrollbars and a positive addition with the magic iframe is that you only have to worry about horizontal scroll.</p>
+<p>By default the "allowOverflow" is set to true which will set the min-width of the magic iframe to be equal to the width of the iframe content. This allows for other ways of handling overflow, like wrapping the magic iframe in a div with overflow set to auto or allow the whole page to scroll if it's not wide enough.</p>
+<a href="fluid-page.html">Load fluid page</a><br />
+<a href="responsive-page.html">Load responsive page</a>
+<hr>
+<div class="form-group">
+    <label for="exampleFormControlTextarea">Resize text area to resize iframe</label>
+    <textarea class="form-control" id="exampleFormControlTextarea" rows="3">Try and resize me!</textarea>
+</div>
+</body>
+</html>

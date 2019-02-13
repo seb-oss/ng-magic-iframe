@@ -13,9 +13,9 @@ import {environment} from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-    src = './assets/first-page.html';
-    activSrc = './assets/first-page.html';
-    styles = 'body { background: white; }';
+    src = '';
+    activSrc = './assets/fluid-page.html';
+    styles = 'body { background: white; margin: 0 auto;}';
     styleUrls: Array<string> = ['./css/external-stylesheet.css', './css/fonts.css'];
     $events: BehaviorSubject<Array<IframeEvent>> = new BehaviorSubject<Array<IframeEvent>>([]);
     magicControlsForm: FormGroup;
@@ -25,23 +25,25 @@ export class AppComponent implements OnInit, OnDestroy {
     @ViewChild(NgMagicIframeComponent) private iframeComponent: NgMagicIframeComponent;
     sources: Array<Snippet> = [{
         name: 'Basic usage',
-        src: '<seb-ng-magic-iframe [source]="\'./assets/first-page.html\'"></seb-ng-magic-iframe>',
+        src: '<seb-ng-magic-iframe [source]="\'./assets/fluid-page.html\'"></seb-ng-magic-iframe>',
         lang: 'markup'
     }, {
         name: 'Advanced usage',
-        src: `<seb-ng-magic-iframe [source]="'./assets/first-page.html'"
-                     [styles]="'body { background: white; }'"
+        src: `<seb-ng-magic-iframe [source]="'./assets/fluid-page.html'"
+                     [styles]="'body { background: white; margin: 0 auto; }'"
                      [styleUrls]="['./css/external-stylesheet.css', './css/fonts.css']"
                      [autoResize]="false"
                      [resizeDebounceMillis]="0"
+                     [matchContentWidth]="true"
+                     [resizeContent]="true"
                      (iframeEvent)="foo($event)">
                      <div class="skeleton-loader"></div>
 </seb-ng-magic-iframe>`,
         lang: 'markup'
     }];
     iframeSource: Array<Snippet> = [{
-     name: '',
-     src: `<iframe src="./assets/first-page.html" frameborder="0" style="width: 100%" height="200"></iframe>`,
+     name: 'Basic iframe',
+     src: `<iframe src="./assets/fluid-page.html" frameborder="0" style="width: 100%" height="200"></iframe>`,
      lang: 'markup'
     }];
     constructor(private cdr: ChangeDetectorRef, private fb: FormBuilder) {}
@@ -58,7 +60,18 @@ export class AppComponent implements OnInit, OnDestroy {
     };
 
     toggleSource() {
-        this.src = this.src !== './assets/first-page.html' ? './assets/first-page.html' : './assets/other-page.html';
+        // this.src = this.src !== './assets/fluid-page.html' ? './assets/fluid-page.html' : './assets/fixed-width-page.html';
+        switch (this.src) {
+            case './assets/fluid-page.html':
+                this.src = './assets/fixed-width-page.html';
+                break;
+            case './assets/fixed-width-page.html':
+                this.src = './assets/responsive-page.html';
+                break;
+            case './assets/responsive-page.html':
+                this.src = './assets/fluid-page.html';
+                break;
+        }
     }
 
     reload() {
@@ -90,7 +103,9 @@ export class AppComponent implements OnInit, OnDestroy {
            externalStyles: true,
            autoResize: true,
            resizeDebounceMillis: 0,
-           showSkeletonLoader: true
+           showSkeletonLoader: true,
+           matchContentWidth: true,
+           resizeContent: true
         });
 
         this.magicControlsForm.valueChanges
@@ -110,5 +125,8 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.$unsubscribe.next();
         this.$unsubscribe.complete();
+    }
+    setSource() {
+        this.src = './assets/fluid-page.html';
     }
 }

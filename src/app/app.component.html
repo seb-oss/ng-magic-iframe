@@ -2,24 +2,36 @@
     <span class="navbar-brand" href="#">
       Magic iframe
     </span>
-    <a class="github-ribbon" href="https://github.com/sebgroup/ng-magic-iframe" target="_blank">Fork me on GitHub</a>
+    <div class="github-ribbon-wrapper">
+        <a class="github-ribbon" href="https://github.com/sebgroup/ng-magic-iframe" target="_blank">Fork me on GitHub</a>
+    </div>
     <span class="navbar-text d-none d-sm-inline-block">
-        A magical iframe component for Angular
+        A magical iframe component
     </span>
 </nav>
-<div class="bg-info-element py-5 px-3">
-    <h1 class="display-1 text-white">Magic iframe</h1>
-    <p class="lead text-white">A magical iframe component for Angular
-    </p>
+<div class="bg-primary-element py-5 px-3">
+    <div class="row justify-content-between">
+        <div class="col-12 col-md-auto">
+            <h1 class="display-1 text-white">Magic iframe</h1>
+            <p class="lead text-white">A magical iframe component for Angular and as web component</p>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 align-self-center">
+            <div class="alert alert-info card mb-0">
+                <h4 class="alert-heading">Not using Angular?</h4>
+                <p><a href="#webComponent" class="alert-link">Scroll down<i class="mx-2 fal fa-arrow-down"></i></a> to find out how to use SEB:s Magic Iframe as a web component together with any framework or just plain vanilla javascript.</p>
+            </div>
+        </div>
+    </div>
 </div>
+<button (click)="setSource()">Set source</button>
 <div class="container-fluid">
-    <ng-template #inlineTip>Inject inline style in iframe: <code>body {{'{ background: white; }' }}</code> (could be any style)</ng-template>
+    <ng-template #inlineTip>Inject inline style in iframe: <code>body {{'{ background: white; margin: 0 auto; }' }}</code> (could be any style)</ng-template>
     <div class="row my-3">
         <div class="col-12 col-md-6">
             <h2 class="px-3 px-sm-0">Magic iframe</h2>
             <div class="card my-3">
                 <div class="card-header border-bottom">
-                    <p class="mb-0 lead">The Magic iframe component adds responsiveness to iframes as well as the ability to listen to events, override styles and show custom loaders when iframe is loading content.</p>
+                    <p class="mb-0 lead">The Magic iframe component adds responsiveness to iframes as well as the ability to listen to events, override styles and show custom loaders when iframe is loading content. <a href="https://github.com/sebgroup/ng-magic-iframe#install-with-npm" class="font-weight-normal d-block">Install using npm<i class="fal fa-arrow-right ml-2" style="font-size: 16px;"></i></a></p>
                 </div>
                 <div class="card-body">
                     <seb-ng-magic-iframe #iframeComponent
@@ -27,7 +39,9 @@
                                          [styles]="magicControlsForm.get('inlineStyles').value ? styles : false"
                                          [styleUrls]="magicControlsForm.get('externalStyles').value ? styleUrls : false"
                                          [autoResize]="magicControlsForm.get('autoResize').value"
+                                         [matchContentWidth]="magicControlsForm.get('matchContentWidth').value"
                                          [resizeDebounceMillis]="magicControlsForm.get('resizeDebounceMillis').value"
+                                         [resizeContent]="magicControlsForm.get('resizeContent').value"
                                          (iframeEvent)="printEvent($event)">
                         <div *ngIf="magicControlsForm.get('showSkeletonLoader').value" class="skeleton-loader"></div>
                     </seb-ng-magic-iframe>
@@ -57,13 +71,46 @@
                                     <input type="checkbox" class="custom-control-input" id="autoResize_checkbox" formControlName="autoResize">
                                     <label class="custom-control-label" for="autoResize_checkbox">Auto resize</label>
                                 </div>
+                                <!--<div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="matchContentWidth_checkbox" formControlName="matchContentWidth">
+                                    <label class="custom-control-label" for="matchContentWidth_checkbox">Match iframe content width</label>
+                                </div>-->
+                                <div class="custom-control custom-checkbox" [ngbTooltip]="'Zoom/resize iframe content to fit size of magic iframe.'" [container]="'body'">
+                                    <input type="checkbox" class="custom-control-input" id="resizeContent_checkbox" formControlName="resizeContent">
+                                    <label class="custom-control-label" for="resizeContent_checkbox">Resize content</label>
+                                </div>
                             </div>
-                            <div class="col-12 col-sm-auto mt-3 mt-sm-0" [ngbTooltip]="'Debounce time for resize detection of iframe content height.'" [container]="'body'">
-                                <label for="resizeDebounceMillis_input">Resize debounce milliseconds</label>
-                                <div class="input-group mb-3">
-                                    <input type="number" class="form-control" id="resizeDebounceMillis_input" aria-label="Resize debounce milliseconds" formControlName="resizeDebounceMillis">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">ms</span>
+                            <div class="col-12 col-sm-auto mt-3 mt-sm-0">
+                                <div class="form-group" [ngbTooltip]="'Debounce time for resize detection of iframe content height.'" [container]="'body'">
+                                    <label for="resizeDebounceMillis_input">Resize debounce milliseconds</label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" id="resizeDebounceMillis_input" aria-label="Resize debounce milliseconds" formControlName="resizeDebounceMillis">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ms</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="matchContent_radio" [ngbTooltip]="'Set min width for magic iframe based on iframe content width. Works best with layouts using fixed width.'" [container]="'body'">Match width of iframe content</label>
+                                    <div class="row">
+                                        <div class="col-12 col-md-auto mb-2 mb-md-0">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" name="matchContentWidth" [value]="true" class="custom-control-input" id="matchContent_radio" formControlName="matchContentWidth">
+                                                <label class="custom-control-label" for="matchContent_radio">True</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-auto mb-2 mb-md-0">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" name="matchContentWidth" [value]="false" class="custom-control-input" id="matchContent_radio_1" formControlName="matchContentWidth">
+                                                <label class="custom-control-label" for="matchContent_radio_1">False</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-auto">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" name="matchContentWidth" [value]="'auto'" class="custom-control-input" id="matchContent_radio_2" formControlName="matchContentWidth">
+                                                <label class="custom-control-label" for="matchContent_radio_2">Auto</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -96,12 +143,23 @@
                     <p class="mb-0 lead">Normal, boring, old iframe that won't resize or let you know what's happening inside. The height is fixed by default so unless you update it manually it will get scrollbars when iframe content is taller than the iframe.</p>
                 </div>
                 <div class="card-body" id="normalIframe">
-                    <iframe src="./assets/first-page.html" frameborder="0" style="width: 100%" height="200"></iframe>
+                    <iframe src="./assets/fluid-page.html" frameborder="0" style="width: 100%" height="200"></iframe>
                 </div>
                 <div class="card-footer">
                     <p>Nothing special going on here but just as reference, this is how you'd normally add an iframe.</p>
                     <exemplify [sources]="iframeSource"></exemplify>
                 </div>
+            </div>
+            <div class="alert alert-info card my-3">
+                <a name="webComponent"><h2 class="alert-heading">Not using Angular?</h2></a>
+                <p>Well we've got great news for you then, SEB:s Magic Iframe is compiled as a native web component too, currently targeting both es5 and es2015 (es6) so you can use it with any framework or just plain vanilla if you like.</p>
+                <h4 class="alert-heading">View web component demo</h4>
+                <a href="./web-component/es5.html" class="alert-link d-block">ES5 version<i class="fal fa-arrow-right ml-2"></i></a>
+                <a href="./web-component" class="alert-link d-block">ES6 version<i class="fal fa-arrow-right ml-2 mb-3"></i></a>
+                <h4 class="alert-heading mt-3">Which one to use?</h4>
+                <p>Use ES5 version if you need to support older browsers not natively supporting web components (includes <a href="https://github.com/webcomponents/webcomponentsjs#custom-elements-es5-adapterjs" target="_blank" class="alert-link">custom-elements-es5-adapter</a>).</p>
+                <h4 class="alert-heading mt-3">Installation</h4>
+                <p><a href="https://github.com/sebgroup/ng-magic-iframe#install-with-npm" class="alert-link">Install using npm<i class="fal fa-arrow-right ml-2"></i></a></p>
             </div>
         </div>
     </div>

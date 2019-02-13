@@ -3,6 +3,8 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
+SEB:s Magic iframe adds responsiveness to iframes as well as the ability to listen to events, override styles and show custom loaders when iframe is loading content (requires that the content is loaded from the same domain). It's available both as an Angular component and as custom web component.
+
 ## Install with npm
 ```
 npm install @sebgroup/ng-magic-iframe --save
@@ -61,19 +63,20 @@ If you run into the following error: `@types/element-resize-detector/index"' has
 
 ## Configuration and options
 ### @Inputs
-|@Input|Description|Default|
+|@Input (as web component)|Description|Default|
 |:-----|:-----------|:-------------------|
-|source| Path to iframe content source.| n/a |
-|styles| Apply/inject inline styles to the iframe (Optional).| n/a |
-|styleUrls| Add one or more stylesheets to the iframe, note that the iframe won't be visible until they've loaded (Optional).| n/a |
-|autoResize| Auto resize the iframe when the inner content changes height (Optional).| true |
-|resizeDebounceMillis| Debounce time in milliseconds for resize event to prevent race condition (Optional).| 50 |
-|debug| Output iframe events in console log (Optional).| false |
+|source (source)| Path to iframe content source.| n/a |
+|styles (styles)| Apply/inject inline styles to the iframe (Optional).| n/a |
+|styleUrls (style-urls)| Add one or more stylesheets to the iframe, note that the iframe won't be visible until they've loaded (Optional).| n/a |
+|autoResize (auto-resize)| Auto resize the iframe when the inner content changes height (Optional).| true |
+|resizeDebounceMillis (resize-debounce-millis)| Debounce time in milliseconds for resize event to prevent race condition (Optional).| 50 |
+|matchContentWidth (match-content-width)| Set width of magic iframe to width of iframe content, useful when iframing fixed width pages (Optional).| false |
+|debug (debug)| Output iframe events in console log (Optional).| false |
 
 ### @Outputs
-|@Output|Description|
+|@Output (as web component)|Description|
 |:-----|:-----------|
-|iframeEvent| Listen for state changes in iframe, see list of events below.|
+|iframeEvent (iframeEvent)| Listen for state changes in iframe, see list of events below.|
 
 ### Iframe events
 |@Input                           |Description|
@@ -97,9 +100,27 @@ SEB Magic iframe uses content projection together with ng-content to show custom
 </seb-ng-magic-iframe>
 ```
 
+## Use without Angular as pure web component
+
+### Install with npm
+```
+npm install @sebgroup/magic-iframe --save
+```
+
+### Using cdn
+```
+https://unpkg.com/@sebgroup/magic-iframe/js/magic-iframe.js
+```
+
 
 ## Run locally
 
 * Clone the repository
 * Run `npm install`
 * Run `npm start` and navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+### To compile and run demo of web components
+
+* Run `npm build`
+* Run `build-element`
+* Run `npm serve-demo` and navigate to `http://localhost:8000/`.

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fluid page</title>
+    <style type="text/css">
+        body {
+            background: #41B0EE;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        .flex {
+            display: flex;
+            flex: 0 0 auto;
+            flex-wrap: wrap;
+        }
+        .flex p {
+            min-width: 260px;
+            display: inline-block;
+            flex-basis: 0;
+            flex-grow: 1;
+            max-width: 100%;
+            padding-right: 1rem;
+            margin-top: 0;
+        }
+        textarea {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<h2>Fluid page (iframed)</h2>
+<div class="flex">
+    <p>This page uses a fluid layout, i.e. it's a fully responsive page that uses percentage instead fixed pixels for widths. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris non iaculis justo, non malesuada urna. Ut vestibulum efficitur nunc vitae iaculis. Aliquam gravida dictum vestibulum. Fusce faucibus nibh in neque sodales, in dictum magna ornare. Aenean pharetra gravida fringilla.</p>
+    <p>Duis suscipit sed ipsum sit amet semper. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam gravida turpis vitae ante faucibus interdum. Quisque vel dictum augue, id pellentesque tortor. Maecenas pellentesque turpis odio, sed posuere tortor porttitor eget.</p>
+</div>
+<button>Button</button>
+<a href="fixed-width-page.html">Load fixed width page</a><br />
+<a href="responsive-page.html">Load responsive page</a>
+<hr>
+<div class="form-group">
+    <label for="exampleFormControlTextarea">Resize text area to resize iframe</label>
+    <textarea class="form-control" id="exampleFormControlTextarea" rows="3">Try and resize me!</textarea>
+</div>
+</body>
+</html>

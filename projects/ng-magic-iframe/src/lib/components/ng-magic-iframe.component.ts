@@ -211,8 +211,14 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
             skip(1),
             distinctUntilChanged(),
             debounceTime(this.resizeDebounceMillis),
-            map((iframeSize) => ((this.matchContentWidth !== false && this._hasBodyWidthRule && iframeSize.minWidth && !this.resizeContent) || this.minWidth ?
-                    {'height': this.height || iframeSize.height, 'minWidth': this.minWidth || iframeSize.minWidth} : {'height': this.height || iframeSize.height })
+            map((iframeSize) => (
+                (this.matchContentWidth !== false && this._hasBodyWidthRule && iframeSize.minWidth && !this.resizeContent)
+                || this.minWidth ? {
+                    'height': this.height || iframeSize.height,
+                    'minWidth': this.minWidth || iframeSize.minWidth
+                } : {
+                    'height': this.height || iframeSize.height
+                })
             ),
             tap(() => this.emitEvent('iframe-resized'))
         );

@@ -1,7 +1,7 @@
-@import "~@sebgroup/bootstrap/scss/variables"; // imports all sass variables used by bootstrap
-@import '~@sebgroup/fonts/scss/seb-fonts'; // import seb font
 @import "~@sebgroup/bootstrap/scss/styles/functions"; // import all sass functions used by bootstrap
 @import "~@sebgroup/bootstrap/scss/mixins/mixins"; // import all mixins used by bootstrap
+@import "~@sebgroup/bootstrap/scss/variables"; // imports all sass variables used by bootstrap
+@import '~@sebgroup/fonts/scss/seb-fonts'; // import seb font
 @import "~@sebgroup/bootstrap/scss/styles/reboot"; // normalize browser differences using normalize.css
 @import "~@sebgroup/bootstrap/scss/styles/forms"; // forms
 @import "~@sebgroup/bootstrap/scss/styles/loaders"; // loaders
@@ -21,6 +21,7 @@
 @import "~@sebgroup/bootstrap/scss/styles/tooltip"; // tooltip
 @import "~@sebgroup/bootstrap/scss/styles/navbar"; // navbar
 @import "~@sebgroup/bootstrap/scss/styles/fifth-element"; // fifth-element
+@import "~@sebgroup/bootstrap/scss/styles/alert"; // fifth-element
 $exemplify-font-family: $font-family-base;
 @import "~angular-exemplify/scss/exemplify";
 @import "~angular-exemplify/scss/prism-exemplify";
@@ -48,10 +49,14 @@ code {
   max-height: 320px;
 }
 
-body {
-  overflow-x: hidden;
+.github-ribbon-wrapper {
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 250px;
+  height: 250px;
 }
-
 .github-ribbon {
   background: $green;
   padding: 1rem;
@@ -63,10 +68,16 @@ body {
   display: inline-block;
   position: absolute;
   color: $white;
+  z-index: 1;
   &:hover {
     color: $white;
   }
 }
-.github-ribbon + .navbar-text {
+.github-ribbon-wrapper + .navbar-text {
   margin-right: 180px;
+}
+
+seb-ng-magic-iframe {
+  overflow-x: auto;
+  display: block;
 }
