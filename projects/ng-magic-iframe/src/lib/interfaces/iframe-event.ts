@@ -12,4 +12,5 @@ export type IframeEventName = 'iframe-click'
     | 'iframe-stylesheet-loaded'
     | 'iframe-all-stylesheets-loaded'
     | 'iframe-keyup'
+    | 'iframe-content-resized'
     | 'iframe-resized';
