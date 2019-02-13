@@ -12,9 +12,9 @@ import { createCustomElement } from '@angular/elements';
     NgMagicIframeModule
   ],
   providers: [],
-    entryComponents: [
-        NgMagicIframeComponent
-    ]
+  entryComponents: [
+      NgMagicIframeComponent
+  ]
 })
 export class AppModule {
     constructor(private injector: Injector) {

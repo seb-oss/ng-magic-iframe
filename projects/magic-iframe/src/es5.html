@@ -30,10 +30,10 @@
     <h2 class="px-3 px-sm-0 mt-3">Magic iframe as web component</h2>
     <div class="card my-3">
         <div class="card-header border-bottom">
-            <p class="mb-0 lead">This web component is built using Angular Elements and targets es5, for more information and options please check <a class="font-weight-normal" href="../">Ng Magic iframe</a>.</p>
+            <p class="mb-0 lead">This web component is built using Angular Elements and targets ES5, for more information and options please check <a class="font-weight-normal" href="../">Ng Magic iframe</a>.</p>
         </div>
         <div class="card-body">
-            <seb-magic-iframe source="../assets/first-page.html" resize-debounce-millis="0" styles="body { background: white; }">
+            <seb-magic-iframe source="../assets/fluid-page.html" resize-debounce-millis="0" styles="body { background: white; }" match-content-width="true">
                 <div class="skeleton-loader"></div>
             </seb-magic-iframe>
         </div>
@@ -41,7 +41,7 @@
             <hr>
             <p><label>Basic usage</label>
                 <code class="d-block">
-                    &lt;seb-magic-iframe source=&quot;../assets/first-page.html&quot;&gt;&lt;/seb-magic-iframe&gt;<br/>
+                    &lt;seb-magic-iframe source=&quot;../assets/fluid-page.html&quot;&gt;&lt;/seb-magic-iframe&gt;<br/>
                     &lt;script type=&quot;text/javascript&quot; src=&quot;magic-iframe-es5.js&quot;&gt;&lt;/script&gt;
                 </code>
             </p>
@@ -50,7 +50,10 @@
 </div>
 <script type="text/javascript" src="./magic-iframe-es5.js"></script>
 <script type="text/javascript">
-    document.querySelector('seb-magic-iframe').styleUrls = ["../assets/css/external-stylesheet.css", "../assets/css/fonts.css"]
-</script>
+    const magicIframe = document.querySelector('seb-magic-iframe');
+    magicIframe.styleUrls = ["../assets/css/external-stylesheet.css", "../assets/css/fonts.css"];
+    magicIframe.addEventListener('iframeEvent',function(event) {
+        console.log(event.detail);
+    });</script>
 </body>
 </html>
