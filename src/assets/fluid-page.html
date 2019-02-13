@@ -24,6 +24,9 @@
             padding-right: 1rem;
             margin-top: 0;
         }
+        .ml-2 {
+          margin-left: .25rem;
+        }
         textarea {
             margin-top: 1rem;
             margin-bottom: 1rem;
@@ -31,6 +34,8 @@
             max-width: 100%;
         }
     </style>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.5.0/css/light.css" integrity="sha384-33RmjeesW9BZ4wR2Gm3n4iBXOvGTto4znqL2kZleiRanWDxM59IHIq5RsbRioqxb" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.5.0/css/fontawesome.css" integrity="sha384-srL3Qh9R/n855m4o5fegS//B2q0R1md7z6ndDYaPj8iEp0j0IuKdFVWMY0JosKPF" crossorigin="anonymous">
 </head>
 <body>
 <h2>Fluid page (iframed)</h2>
@@ -40,7 +45,12 @@
 </div>
 <button>Button</button>
 <a href="fixed-width-page.html">Load fixed width page</a><br />
-<a href="responsive-page.html">Load responsive page</a>
+<a href="responsive-page.html">Load responsive page</a><br />
+<hr>
+<a href="mailto:some.email@random.domain.xx">Send email<i class="fal fa-envelope ml-2"></i></a><br />
+<a href="example.pdf">Download pdf<i class="fal fa-file-pdf ml-2"></i></a><br />
+<a href="example.xlsx">Download spreadsheet<i class="fal fa-file-excel ml-2"></i></a><br />
+<a href="#" onClick="alert('This is an alert!');">Alert<i class="fal fa-comment-alt ml-2"></i></a><br />
 <hr>
 <div class="form-group">
     <label for="exampleFormControlTextarea">Resize text area to resize iframe</label>

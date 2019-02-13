@@ -13,7 +13,7 @@ import {environment} from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-    src = '';
+    src = './assets/fluid-page.html';
     activSrc = './assets/fluid-page.html';
     styles = 'body { background: white; margin: 0 auto;}';
     styleUrls: Array<string> = ['./css/external-stylesheet.css', './css/fonts.css'];

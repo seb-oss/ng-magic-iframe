@@ -27,11 +27,6 @@ import {EventManager} from '@angular/platform-browser';
         </ng-container>
     `,
     styles: [`
-        /*:host {
-            position: relative;
-            display: block;
-            overflow-y: hidden;
-        }*/
         .seb-iframe {
             overflow: hidden;
             width: 100%;

@@ -23,7 +23,7 @@
         </div>
     </div>
 </div>
-<button (click)="setSource()">Set source</button>
+
 <div class="container-fluid">
     <ng-template #inlineTip>Inject inline style in iframe: <code>body {{'{ background: white; margin: 0 auto; }' }}</code> (could be any style)</ng-template>
     <div class="row my-3">
@@ -34,6 +34,7 @@
                     <p class="mb-0 lead">The Magic iframe component adds responsiveness to iframes as well as the ability to listen to events, override styles and show custom loaders when iframe is loading content. <a href="https://github.com/sebgroup/ng-magic-iframe#install-with-npm" class="font-weight-normal d-block">Install using npm<i class="fal fa-arrow-right ml-2" style="font-size: 16px;"></i></a></p>
                 </div>
                 <div class="card-body">
+                    <button *ngIf="!src" class="btn btn-primary" (click)="setSource()">Set iframe source</button>
                     <seb-ng-magic-iframe #iframeComponent
                                          [source]="src"
                                          [styles]="magicControlsForm.get('inlineStyles').value ? styles : false"

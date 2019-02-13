@@ -1,10 +1,10 @@
 @import "~@sebgroup/bootstrap/scss/styles/functions"; // import all sass functions used by bootstrap
-@import "~@sebgroup/bootstrap/scss/mixins/mixins"; // import all mixins used by bootstrap
 @import "~@sebgroup/bootstrap/scss/variables"; // imports all sass variables used by bootstrap
+@import "~@sebgroup/bootstrap/scss/mixins/mixins"; // import all mixins used by bootstrap
 @import '~@sebgroup/fonts/scss/seb-fonts'; // import seb font
 @import "~@sebgroup/bootstrap/scss/styles/reboot"; // normalize browser differences using normalize.css
 @import "~@sebgroup/bootstrap/scss/styles/forms"; // forms
-@import "~@sebgroup/bootstrap/scss/styles/loaders"; // loaders
+@import "~@sebgroup/bootstrap/scss/styles/spinners"; // spinners
 @import "~@sebgroup/bootstrap/scss/styles/custom-forms"; // forms
 @import "~@sebgroup/bootstrap/scss/styles/input-group"; // input group
 @import "~@sebgroup/bootstrap/scss/styles/buttons"; // buttons
@@ -80,4 +80,5 @@ code {
 seb-ng-magic-iframe {
   overflow-x: auto;
   display: block;
+  position: relative;
 }
