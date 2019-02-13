@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     ElementRef,
@@ -153,7 +152,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
 
     $iframeClick: ReplaySubject<MouseEvent> = new ReplaySubject<MouseEvent>(1);
     $iframeKeyUp: ReplaySubject<KeyboardEvent> = new ReplaySubject<KeyboardEvent>(1);
-    $iframeUnload: ReplaySubject<BeforeUnloadEvent> = new ReplaySubject<BeforeUnloadEvent>(1);
+    $iframeUnload: ReplaySubject<Event> = new ReplaySubject<Event>(1);
     $loading: BehaviorSubject<boolean> = new BehaviorSubject(true);
     $styling: Observable<any>;
     iframeDocument: Document;
@@ -391,14 +390,14 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.$unsubscribe)
             ).subscribe(() => {
-            this.$loading.next(true);
-            this.emitEvent('iframe-unloaded');
-            this.iframeBody.style.overflow = 'hidden';
+              this.$loading.next(true);
+              this.emitEvent('iframe-unloaded');
+              this.iframeBody.style.overflow = 'hidden';
         });
 
         fromEvent(iframe, 'load')
             .pipe(
-                takeUntil(this.$unsubscribe)
+              takeUntil(this.$unsubscribe)
             )
             .subscribe(() => {
                 try {
@@ -449,8 +448,8 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
                     // add unload listener
                     const unloadListener = this.renderer.listen(
                         iframe.contentWindow,
-                        'beforeunload',
-                        ($event: BeforeUnloadEvent) => this.$iframeUnload.next($event)
+                        'unload',
+                        ($event: Event) => this.$iframeUnload.next($event)
                     );
                     this.eventListeners.push(unloadListener);
                 } catch (error) {
