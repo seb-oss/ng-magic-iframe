@@ -23,7 +23,12 @@ import {EventManager} from '@angular/platform-browser';
             <div class="seb-iframe-loading" *ngIf="$loading | push">
                 <ng-content></ng-content>
             </div>
-            <iframe #iframe [src]="source | safe" frameborder="0" class="seb-iframe" [ngStyle]="$styling | push" scrolling="no"></iframe>
+            <iframe #iframe
+                    [src]="source | safe:sanitizeSource"
+                    frameborder="0"
+                    class="seb-iframe"
+                    [ngStyle]="$styling | push"
+                    scrolling="no"></iframe>
         </ng-container>
     `,
     styles: [`
@@ -57,6 +62,14 @@ import {EventManager} from '@angular/platform-browser';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NgMagicIframeComponent implements OnInit, OnDestroy {
+    get sanitizeSource(): boolean {
+      return this._sanitizeSource;
+    }
+
+  @Input() set sanitizeSource(value: boolean) {
+      this._sanitizeSource = value;
+    }
+
     get minWidth(): string {
         return this._minWidth;
     }
@@ -161,6 +174,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     activeSource: BehaviorSubject<string> = new BehaviorSubject('');
     elementResizeDetector: elementResizeDetectorMaker.Erd;
     private _debug = false;
+    private _sanitizeSource = true;
     private eventListeners: Array<any> = [];
     private $unsubscribe = new Subject();
     private elementRef: ElementRef;
