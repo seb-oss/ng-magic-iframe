@@ -82,13 +82,13 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
         if (this.resizeContent) {
             if (!this._resizeListener) {
             this._resizeListener = this.eventManager.addGlobalEventListener('window', 'resize',
-            event => this.zoom(event));
+            event => this.scale(event));
             }
         } else if (this._resizeListener)  {
             this._resizeListener();
             this._resizeListener = null;
-            this._previousZoom = this._zoom;
-            this._zoom = 1;
+            this._previousScale = this._scale;
+            this._scale = 1;
         }
     }
     get matchContentWidth(): boolean | 'auto' {
@@ -180,8 +180,8 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     private _matchContentWidth: boolean | 'auto' = false;
     private _hasBodyWidthRule = false;
     private _styleElement: HTMLElement;
-    private _zoom = 1;
-    private _previousZoom: number;
+    private _scale = 1;
+    private _previousScale: number;
     private _resizeContent = false;
     private _resizeListener: Function;
     private _minWidth: string;
@@ -193,12 +193,13 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
             && (cssRule['style'].width || cssRule['style'].minWidth); // that contains width or minWidth
     }
 
-    private zoom(event?: Event) {
-        const zoom = this._previousZoom && this._hasBodyWidthRule ?
-            this._previousZoom : (this.elementRef.nativeElement.clientWidth / this.iframeBody.offsetWidth);
-        this._previousZoom = null;
-        this._zoom = zoom > 1 ? 1 : zoom;
-        this.iframeBody.style.zoom = this._zoom.toString();
+    private scale(event?: Event) {
+        const zoom = this._previousScale && this._hasBodyWidthRule ?
+            this._previousScale : (this.elementRef.nativeElement.clientWidth / this.iframeBody.offsetWidth);
+        this._previousScale = null;
+        this._scale = zoom > 1 ? 1 : zoom;
+        this.iframeBody.style.transformOrigin = 'top left';
+        this.iframeBody.style.transform = 'scale3d(' + this._scale + ',' + this._scale + ',1)';
         this.updateSize();
 
         // emit content resized event
@@ -297,7 +298,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
             const marginBottom = parseInt(computedStyle.getPropertyValue('margin-bottom'), 10);
             const height = offsetHeight + marginTop + marginBottom;
             const width = this.iframeBody.offsetWidth;
-            const iframeSize = {height: height * this._zoom + 'px', minWidth: width + 'px'};
+            const iframeSize = {height: height * this._scale + 'px', minWidth: width + 'px'};
             this.$iframeSize.next(iframeSize);
     }
 
@@ -366,7 +367,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
 
             // zoom content
             if (this.resizeContent) {
-                this.zoom();
+                this.scale();
             }
         });
         this.updateStyles();
