@@ -27,9 +27,14 @@ import {EventManager} from '@angular/platform-browser';
         </ng-container>
     `,
     styles: [`
+        :host {
+          -webkit-overflow-scrolling:touch;
+        }
         .seb-iframe {
             overflow: hidden;
-            width: 100%;
+            min-width: 100%;
+            width: 100px;
+            *width: 100%;
         }
         .seb-iframe-loading {
             height: 100%;
