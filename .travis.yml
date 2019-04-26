@@ -1,7 +1,7 @@
 dist: trusty
 sudo: false
 language: node_js
-node_js: node
+node_js: lts/*
 
 install:
 - npm ci
