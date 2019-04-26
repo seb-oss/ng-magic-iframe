@@ -10,7 +10,7 @@ import {
     Renderer2,
     ViewChild
 } from '@angular/core';
-import {BehaviorSubject, forkJoin, fromEvent, Observable, ReplaySubject, Subject} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, ReplaySubject, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, skip, takeUntil, tap} from 'rxjs/operators';
 import elementResizeDetectorMaker from 'element-resize-detector';
 import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
@@ -24,6 +24,7 @@ import {EventManager} from '@angular/platform-browser';
                 <ng-content></ng-content>
             </div>
             <iframe #iframe
+                    (load)="loaded(iframe)"
                     [src]="source | safe:sanitizeSource"
                     frameborder="0"
                     class="seb-iframe"
@@ -181,6 +182,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     @ViewChild('iframe') set content(content: ElementRef) {
         if (content && !this.elementRef) {
             this.elementRef = content;
+            this.cdr.detectChanges();
             this.init();
         }
     }
@@ -208,16 +210,18 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     }
 
     private scale(event?: Event) {
-        const zoom = this._previousScale && this._hasBodyWidthRule ?
-            this._previousScale : (this.elementRef.nativeElement.clientWidth / this.iframeBody.offsetWidth);
-        this._previousScale = null;
-        this._scale = zoom > 1 ? 1 : zoom;
-        this.iframeBody.style.transformOrigin = 'top left';
-        this.iframeBody.style.transform = 'scale3d(' + this._scale + ',' + this._scale + ',1)';
-        this.updateSize();
+        if (this.iframeBody) {
+            const zoom = this._previousScale && this._hasBodyWidthRule ?
+                this._previousScale : (this.elementRef.nativeElement.clientWidth / this.iframeBody.offsetWidth);
+            this._previousScale = null;
+            this._scale = zoom > 1 ? 1 : zoom;
+            this.iframeBody.style.transformOrigin = 'top left';
+            this.iframeBody.style.transform = 'scale3d(' + this._scale + ',' + this._scale + ',1)';
+            this.updateSize();
 
-        // emit content resized event
-        this.emitEvent('iframe-content-resized');
+            // emit content resized event
+            this.emitEvent('iframe-content-resized');
+        }
     }
 
     private updateStyles() {
@@ -306,7 +310,8 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     }
 
     updateSize(body?: HTMLElement, style?: any) {
-            const computedStyle =  style || this.elementRef.nativeElement.contentWindow.getComputedStyle(this.iframeBody);
+        if (this.iframeBody) {
+            const computedStyle = style || this.elementRef.nativeElement.contentWindow.getComputedStyle(this.iframeBody);
             const offsetHeight = this.iframeBody.offsetHeight;
             const marginTop = parseInt(computedStyle.getPropertyValue('margin-top'), 10);
             const marginBottom = parseInt(computedStyle.getPropertyValue('margin-bottom'), 10);
@@ -314,6 +319,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
             const width = this.iframeBody.offsetWidth;
             const iframeSize = {height: height * this._scale + 'px', minWidth: width + 'px'};
             this.$iframeSize.next(iframeSize);
+        }
     }
 
     private addElementResizeDetector(body: HTMLElement, style: any) {
@@ -388,7 +394,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     }
 
     init() {
-        const iframe = this.elementRef.nativeElement;
+
         this.$iframeClick
             .pipe(
                 takeUntil(this.$unsubscribe)
@@ -409,70 +415,65 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
               this.emitEvent('iframe-unloaded');
               this.iframeBody.style.overflow = 'hidden';
         });
+    }
+    loaded(iframe: HTMLIFrameElement) {
+        try {
+            this.activeSource.next(iframe.contentWindow.location.href);
 
-        fromEvent(iframe, 'load')
-            .pipe(
-              takeUntil(this.$unsubscribe)
-            )
-            .subscribe(() => {
-                try {
-                    this.activeSource.next(iframe.contentWindow.location.href);
+            // declare iframe document and body
+            this.iframeDocument = iframe.contentDocument;
+            this.iframeBody = this.iframeDocument.body;
 
-                    // declare iframe document and body
-                    this.iframeDocument = iframe.contentDocument;
-                    this.iframeBody = this.iframeDocument.body;
+            // prevent overflow for iframe body
+            this.preventOverflow();
 
-                    // prevent overflow for iframe body
-                    this.preventOverflow();
+            // add inline css
+            if (this.styles) {
+                this.addCss(this.styles);
+            }
 
-                    // add inline css
-                    if (this.styles) {
-                        this.addCss(this.styles);
-                    }
+            // add external stylesheets
+            if (this.styleUrls && this.styleUrls.length > 0) {
+                this.addStyleSheets(this.styleUrls);
+            } else {
+                // check if body has width rule defined
+                this.hasBodyWidthRule();
+                this.$loading.next(false);
+            }
 
-                    // add external stylesheets
-                    if (this.styleUrls && this.styleUrls.length > 0) {
-                        this.addStyleSheets(this.styleUrls);
-                    } else {
-                        // check if body has width rule defined
-                        this.hasBodyWidthRule();
-                        this.$loading.next(false);
-                    }
+            // add element resize detector
+            if (this.autoResize) {
+                this.addElementResizeDetector(this.iframeBody, iframe.contentWindow.getComputedStyle(this.iframeBody));
+            }
 
-                    // add element resize detector
-                    if (this.autoResize) {
-                        this.addElementResizeDetector(this.iframeBody, iframe.contentWindow.getComputedStyle(this.iframeBody));
-                    }
+            // add click listener
+            const clickListener = this.renderer.listen(
+                iframe.contentWindow,
+                'click',
+                ($event: MouseEvent) => this.$iframeClick.next($event)
+            );
+            this.eventListeners.push(clickListener);
 
-                    // add click listener
-                    const clickListener = this.renderer.listen(
-                        iframe.contentWindow,
-                        'click',
-                        ($event: MouseEvent) => this.$iframeClick.next($event)
-                    );
-                    this.eventListeners.push(clickListener);
+            // add key up listener
+            const keyUpListener = this.renderer.listen(
+                iframe.contentWindow,
+                'keyup',
+                ($event: KeyboardEvent) => this.$iframeKeyUp.next($event)
+            );
+            this.eventListeners.push(keyUpListener);
 
-                    // add key up listener
-                    const keyUpListener = this.renderer.listen(
-                        iframe.contentWindow,
-                        'keyup',
-                        ($event: KeyboardEvent) => this.$iframeKeyUp.next($event)
-                    );
-                    this.eventListeners.push(keyUpListener);
-
-                    // add unload listener
-                    const unloadListener = this.renderer.listen(
-                        iframe.contentWindow,
-                        'unload',
-                        ($event: Event) => this.$iframeUnload.next($event)
-                    );
-                    this.eventListeners.push(unloadListener);
-                } catch (error) {
-                    console.log('Event listeners and/or styles and resize listener could not be added due to a cross-origin frame error.');
-                    console.warn(error);
-                    this.$loading.next(null);
-                }
-            });
+            // add unload listener
+            const unloadListener = this.renderer.listen(
+                iframe.contentWindow,
+                'unload',
+                ($event: Event) => this.$iframeUnload.next($event)
+            );
+            this.eventListeners.push(unloadListener);
+        } catch (error) {
+            console.log('Event listeners and/or styles and resize listener could not be added due to a cross-origin frame error.');
+            console.warn(error);
+            this.$loading.next(null);
+        }
     }
 
     ngOnDestroy(): void {
