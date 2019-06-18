@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { NgMagicIframeModule } from '../../projects/ng-magic-iframe/src/lib/ng-magic-iframe.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { ExemplifyModule } from 'angular-exemplify';
+// import { ExemplifyModule } from 'angular-exemplify';
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import { ExemplifyModule } from 'angular-exemplify';
     NgMagicIframeModule,
     ReactiveFormsModule,
     NgbTooltipModule,
-    ExemplifyModule
+    // ExemplifyModule
   ],
   providers: [],
   bootstrap: [AppComponent]
