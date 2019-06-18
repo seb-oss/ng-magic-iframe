@@ -84,6 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.$events.next([{
             event: $event.event,
             src: page[page.length - 1],
+            pageTitle: 'test',
             resource: resourceName && typeof $event.resource !== 'object' ? resourceName[resourceName.length - 1] : <string>resourceName},
             ...this.$events.value]);
         this.activSrc = $event.src;

@@ -361,7 +361,11 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     }
 
     private emitEvent(eventName: IframeEventName, resource?: string) {
-        const iframeEvent: IframeEvent = { event: eventName, src: this.activeSource.value};
+        const iframeEvent: IframeEvent = {
+            event: eventName,
+            src: this.activeSource.value,
+            pageTitle: this.iframeDocument.title
+        };
         if (resource) {
             iframeEvent.resource = resource;
         }
@@ -469,9 +473,13 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
                 ($event: Event) => this.$iframeUnload.next($event)
             );
             this.eventListeners.push(unloadListener);
+
+            // detect changes
+            this.cdr.detectChanges();
         } catch (error) {
             console.log('Event listeners and/or styles and resize listener could not be added due to a cross-origin frame error.');
             console.warn(error);
+            this.emitEvent('iframe-error');
             this.$loading.next(null);
         }
     }

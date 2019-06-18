@@ -2,6 +2,7 @@ export interface IframeEvent {
     event: IframeEventName;
     src: string;
     resource?: string;
+    pageTitle: string;
 }
 export type IframeEventName = 'iframe-click'
     | 'iframe-loaded'
@@ -13,4 +14,5 @@ export type IframeEventName = 'iframe-click'
     | 'iframe-all-stylesheets-loaded'
     | 'iframe-keyup'
     | 'iframe-content-resized'
-    | 'iframe-resized';
+    | 'iframe-resized'
+    | 'iframe-error';
