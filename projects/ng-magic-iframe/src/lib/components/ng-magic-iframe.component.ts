@@ -179,7 +179,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     private eventListeners: Array<any> = [];
     private $unsubscribe = new Subject();
     private elementRef: ElementRef;
-    @ViewChild('iframe') set content(content: ElementRef) {
+    @ViewChild('iframe', { static: false }) set content(content: ElementRef) {
         if (content && !this.elementRef) {
             this.elementRef = content;
             this.cdr.detectChanges();

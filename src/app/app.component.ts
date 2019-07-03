@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isActiveIframeTools = true;
     private $unsubscribe = new Subject();
 
-    @ViewChild(NgMagicIframeComponent) private iframeComponent: NgMagicIframeComponent;
+    @ViewChild(NgMagicIframeComponent, { static: false }) private iframeComponent: NgMagicIframeComponent;
     sources: Array<Snippet> = [{
         name: 'Basic usage',
         src: '<seb-ng-magic-iframe [source]="\'./assets/fluid-page.html\'"></seb-ng-magic-iframe>',
