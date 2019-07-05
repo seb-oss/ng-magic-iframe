@@ -1,5 +1,6 @@
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -10,8 +11,8 @@ import {
     Renderer2,
     ViewChild
 } from '@angular/core';
-import {BehaviorSubject, forkJoin, Observable, ReplaySubject, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, skip, takeUntil, tap} from 'rxjs/operators';
+import {BehaviorSubject, forkJoin, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, map, skip, tap} from 'rxjs/operators';
 import elementResizeDetectorMaker from 'element-resize-detector';
 import {IframeEvent, IframeEventName} from '../interfaces/iframe-event';
 import {EventManager} from '@angular/platform-browser';
@@ -19,12 +20,11 @@ import {EventManager} from '@angular/platform-browser';
 @Component({
     selector: 'seb-ng-magic-iframe',
     template: `
-        <ng-container *ngIf="source">
+        <ng-container *ngIf="source && source.length > 0">
             <div class="seb-iframe-loading" *ngIf="$loading | push">
                 <ng-content></ng-content>
             </div>
             <iframe #iframe
-                    (load)="loaded(iframe)"
                     [src]="source | safe:sanitizeSource"
                     frameborder="0"
                     class="seb-iframe"
@@ -130,6 +130,9 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
         this._resizeDebounceMillis = value;
 
     }
+    @Input() set reload(value: any) {
+        this.reloadIframe();
+    }
     get autoResize(): boolean {
         return this._autoResize;
     }
@@ -161,6 +164,18 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
     }
     constructor(private renderer: Renderer2, private eventManager: EventManager, private cdr: ChangeDetectorRef) {}
+    @ViewChild('iframe', { static: false }) set content(content: ElementRef) {
+        if (content && !this.elementRef) {
+            this.elementRef = content;
+            const loadListener = this.renderer.listen(this.elementRef.nativeElement,
+                'load',
+                () => this.loaded(this.elementRef.nativeElement)
+            );
+            // push listener to array so that we can remove them later
+            this.eventListeners.push(loadListener);
+            this.init();
+        }
+    }
 
     @Output() iframeEvent: EventEmitter<IframeEvent> = new EventEmitter();
 
@@ -172,20 +187,13 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     iframeDocument: Document;
     iframeBody: HTMLElement;
 
-    activeSource: BehaviorSubject<string> = new BehaviorSubject('');
+    activeSource: BehaviorSubject<string> = new BehaviorSubject(null);
     elementResizeDetector: elementResizeDetectorMaker.Erd;
     private _debug = false;
     private _sanitizeSource = true;
     private eventListeners: Array<any> = [];
-    private $unsubscribe = new Subject();
+    private subscription: Subscription = new Subscription();
     private elementRef: ElementRef;
-    @ViewChild('iframe', { static: false }) set content(content: ElementRef) {
-        if (content && !this.elementRef) {
-            this.elementRef = content;
-            this.cdr.detectChanges();
-            this.init();
-        }
-    }
     private _source: string;
     private _styles: string;
     private $iframeSize: BehaviorSubject<{minWidth?: string, height: string}> =
@@ -280,10 +288,7 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
                 this.emitEvent('iframe-stylesheet-load', styleUrl);
             });
 
-            forkJoin(loadSubjects)
-                .pipe(
-                    takeUntil(this.$unsubscribe)
-                )
+            this.subscription.add(forkJoin(loadSubjects)
                 .subscribe(() => {
                     if (styleUrls.length > 1) {
                         this.emitEvent('iframe-all-stylesheets-loaded', styleUrls);
@@ -291,7 +296,8 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
                     // check if body has width rule defined
                     this.hasBodyWidthRule();
                     this.$loading.next(false);
-                });
+                })
+            );
         }
     }
 
@@ -375,50 +381,47 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
         }
     }
 
-    reload() {
+    private reloadIframe() {
         if (this.iframeDocument && this.iframeDocument.location) {
             this.iframeDocument.location.reload();
         }
     }
 
     ngOnInit() {
-        // this.activeSource = this.source;
-        this.$loading.pipe(
-            filter(value => value === false || value === null),
-            takeUntil(this.$unsubscribe)
-        ).subscribe((res) => {
-            this.emitEvent(res === null ? 'iframe-loaded-with-errors' : 'iframe-loaded');
+        this.subscription.add(
+            this.$loading.pipe(
+                filter(value => value === false || value === null),
+            ).subscribe((res) => {
+                this.emitEvent(res === null ? 'iframe-loaded-with-errors' : 'iframe-loaded');
 
-            // zoom content
-            if (this.resizeContent) {
-                this.scale();
-            }
-        });
+                // zoom content
+                if (this.resizeContent) {
+                    this.scale();
+                }
+            })
+        );
         this.updateStyles();
     }
 
     init() {
 
-        this.$iframeClick
-            .pipe(
-                takeUntil(this.$unsubscribe)
-            ).subscribe(() => {
-            this.emitEvent('iframe-click');
-        });
-        this.$iframeKeyUp
-            .pipe(
-                takeUntil(this.$unsubscribe)
-            ).subscribe(() => {
-            this.emitEvent('iframe-keyup');
-        });
-        this.$iframeUnload
-            .pipe(
-                takeUntil(this.$unsubscribe)
-            ).subscribe(() => {
-              this.$loading.next(true);
-              this.emitEvent('iframe-unloaded');
-              this.iframeBody.style.overflow = 'hidden';
-        });
+        this.subscription.add(
+            this.$iframeClick.subscribe(() => {
+                this.emitEvent('iframe-click');
+            })
+        );
+        this.subscription.add(
+            this.$iframeKeyUp.subscribe(() => {
+                this.emitEvent('iframe-keyup');
+            })
+        );
+        this.subscription.add(
+            this.$iframeUnload.subscribe(() => {
+                this.$loading.next(true);
+                this.emitEvent('iframe-unloaded');
+                this.iframeBody.style.overflow = 'hidden';
+            })
+        );
     }
     loaded(iframe: HTMLIFrameElement) {
         try {
@@ -485,8 +488,9 @@ export class NgMagicIframeComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.$unsubscribe.next();
-        this.$unsubscribe.complete();
+
+        // unsubscribe
+        this.subscription.unsubscribe();
 
         // detach event listeners
         this.eventListeners.map((listener) => listener());

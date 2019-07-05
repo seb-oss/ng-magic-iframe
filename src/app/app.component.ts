@@ -75,7 +75,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     reload() {
-        this.iframeComponent.reload();
+        this.iframeComponent.reloadIframe();
     }
     printEvent($event: IframeEvent) {
         const page = $event.src.split('/');
@@ -114,7 +114,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 takeUntil(this.$unsubscribe)
             )
             .subscribe(val => {
-                this.iframeComponent.reload();
+                this.iframeComponent.reloadIframe();
                 if (!val.autoResize && !this.magicControlsForm.get('resizeDebounceMillis').disabled) {
                     this.magicControlsForm.get('resizeDebounceMillis').disable({onlySelf: true});
                 } else if (val.autoResize && this.magicControlsForm.get('resizeDebounceMillis').disabled) {
